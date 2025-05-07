@@ -1,0 +1,536 @@
+{
+  "name": "IMAP Classifier",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "27a1eeca-ff10-43ae-a458-d0f2f212803f",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "v0ocIVRcZvHf8BoV",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "summarizationMethodAndPrompts": {
+            "values": {
+              "summarizationMethod": "stuff",
+              "prompt": "=Summarize this email as a query or problem. Include:\n\t•\tA clear summary of the question or issue raised.\n\t•\tThe sender’s name and email address.{{ $('Email Trigger (IMAP)').item.json.metadata['return-path'] }}\n\t•\tAny urgent or technical context.\nKeep the summary concise and easy to forward over WhatsApp.\n{{ $('Email Trigger (IMAP)').item.json.textPlain }}"
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainSummarization",
+      "typeVersion": 2,
+      "position": [
+        600,
+        -180
+      ],
+      "id": "30969069-82ca-4d88-a2c0-8168945606c9",
+      "name": "Summarization Chain"
+    },
+    {
+      "parameters": {
+        "options": {
+          "summarizationMethodAndPrompts": {
+            "values": {
+              "summarizationMethod": "stuff",
+              "prompt": "=Summarize this email as a query or problem. Include:\n\t•\tA clear summary of the question or issue raised.\n\t•\tThe sender’s name and email address.{{ $('Email Trigger (IMAP)').item.json.metadata['return-path'] }}\n\t•\tAny urgent or technical context.\nKeep the summary concise and easy to forward over WhatsApp.\n{{ $('Email Trigger (IMAP)').item.json.textPlain }}"
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainSummarization",
+      "typeVersion": 2,
+      "position": [
+        600,
+        180
+      ],
+      "id": "0a6998a3-2309-44b3-b637-cbd56918afe5",
+      "name": "Summarization Chain1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1rXlgKG1HWQOAydoOWzebT0tmV_4VbqQdVdfNiFrTk9E",
+          "mode": "list",
+          "cachedResultName": "Leads List",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rXlgKG1HWQOAydoOWzebT0tmV_4VbqQdVdfNiFrTk9E/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rXlgKG1HWQOAydoOWzebT0tmV_4VbqQdVdfNiFrTk9E/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Time": "={{ $('Mail Classifier').item.json.date }}",
+            "Message": "={{ $('Mail Classifier').item.json.textPlain }}",
+            "Mail ID": "={{ $('Mail Classifier').item.json.from }}",
+            "Summary": "={{ $json.response.text }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Mail ID",
+              "displayName": "Mail ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Message",
+              "displayName": "Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Summary",
+              "displayName": "Summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        920,
+        -180
+      ],
+      "id": "7b8e5ef4-0295-430b-94c5-ba0e7deaed08",
+      "name": "Lead List",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qo0PkoqWQxHpxFzc",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1D37bnAyOd7EAnKaFWASshyrysiKRg7jYsv0Y2kHp11o",
+          "mode": "list",
+          "cachedResultName": "Idea List",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1D37bnAyOd7EAnKaFWASshyrysiKRg7jYsv0Y2kHp11o/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1D37bnAyOd7EAnKaFWASshyrysiKRg7jYsv0Y2kHp11o/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Mail ID": "={{ $('Email Trigger (IMAP)').item.json.from }}",
+            "Idea": "={{ $('Email Trigger (IMAP)').item.json.textPlain }}",
+            "Time": "={{ $('Email Trigger (IMAP)').item.json.date }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Idea",
+              "displayName": "Idea",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Mail ID",
+              "displayName": "Mail ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        920,
+        180
+      ],
+      "id": "68104dbc-4971-4da5-8efe-b427d3be965d",
+      "name": "Ideas List",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qo0PkoqWQxHpxFzc",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-001",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        300,
+        180
+      ],
+      "id": "163230ef-2383-42a4-98bc-c27ae374d7ed",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "bFhM1Ps4YfzVOtHS",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "summarizationMethodAndPrompts": {
+            "values": {
+              "summarizationMethod": "stuff",
+              "prompt": "=Summarize this email as a query or problem. Include:\n\t•\tA clear summary of the question or issue raised.\n\t•\tThe sender’s name and email address.{{ $('Email Trigger (IMAP)').item.json.metadata['return-path'] }}\n\t•\tAny urgent or technical context.\nKeep the summary concise and easy to forward over WhatsApp.\nEmail contents: {{ $('Email Trigger (IMAP)').item.json.textPlain }}"
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainSummarization",
+      "typeVersion": 2,
+      "position": [
+        600,
+        0
+      ],
+      "id": "e4cbcf39-457b-4b51-9d25-666a7963aabf",
+      "name": "Summarization Chain2"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "581877381684738",
+        "recipientPhoneNumber": "$TECH_PHONE_NUMBER",
+        "textBody": "={{ $('Summarization Chain1').item.json.response.text }}",
+        "additionalFields": {
+          "previewUrl": false
+        }
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        1080,
+        180
+      ],
+      "id": "2489a17e-944a-41e8-87a9-1e38e42e360b",
+      "name": "Tech Team",
+      "webhookId": "f53906e0-3922-4722-93f6-257ed1e7fe10",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "lL1GgrllRKYWJV0E",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "581877381684738",
+        "recipientPhoneNumber": "$SALES_PHONE_NUMBER",
+        "textBody": "={{ $('Summarization Chain').item.json.response.text }}{{ $('Summarization Chain2').item.json.response.text }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        1080,
+        -80
+      ],
+      "id": "fc7fb72a-4d1b-4a09-8269-efaf650621bc",
+      "name": "Sales & Management  Team",
+      "webhookId": "f53906e0-3922-4722-93f6-257ed1e7fe10",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "lL1GgrllRKYWJV0E",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "=context: {{ $json.textPlain }} and mail id :{{$json.metadata['return-path'] }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "Leads",
+              "description": "This email is from a potential customer or client who is expressing interest in our products, services, or solutions for the first time. It may contain inquiries about features, pricing, demos, or partnership opportunities and typically comes from someone not yet in our system.  Examples include: \tRequests for product demos,\tQuestions about pricing"
+            },
+            {
+              "category": "Vendor",
+              "description": "his email is from an existing or potential vendor/supplier providing services, tools, platforms, or products to our company. It may include invoices, service updates, account-related communication, partnership proposals, or technical support related to their offerings.  Examples include: \t•\tBilling or invoicing from a software provider \t•\tUpdates or maintenance notifications from vendors \t•\tVendor onboarding or compliance requests \t•\tTechnical support or account management from platforms we use"
+            },
+            {
+              "category": "Q&A",
+              "description": "This email contains specific questions, technical queries, or problem statements related to our products, services, or processes. It may come from existing clients, partners, or prospects and is intended to seek help, clarification, or support.  Examples include: “Can we automation this?” \t“I need to implement automation in my company” “How can I learn automation”"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "983f968d-7e66-48b9-85aa-01bc5513b482",
+      "name": "Mail Classifier"
+    },
+    {
+      "parameters": {
+        "content": "Mainly Used for Custom Mail ID\n\nLike Company Mail ID\n\ninfo@forgemind.in",
+        "height": 340
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        -140
+      ],
+      "id": "8cb3103c-ac47-471f-a5f9-8c52b1260693",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {
+    "Email Trigger (IMAP)": [
+      {
+        "json": {
+          "textHtml": "Sample\r\n",
+          "textPlain": "what is n8n?",
+          "metadata": {
+            "return-path": "<sathyaprakashelango@gmail.com>",
+            "delivered-to": "info@forgemind.in",
+            "received": "from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])\tby nl-srv-smtpin11.hostinger.io (mx.hostinger.com) with ESMTPS id 4ZrBLn28dDz4KSYb\tfor <info@forgemind.in>; Sun, 04 May 2025 17:22:57 +0000 (UTC)",
+            "arc-message-signature": "i=1; a=rsa-sha256; c=relaxed/relaxed; d=forgemind.in;\ts=hostingermail-a; t=1746379377;\th=from:from:reply-to:subject:subject:date:date:message-id:message-id:\t to:to:cc:mime-version:mime-version:content-type:content-type:\t dkim-signature; bh=How3au91bDq9L8vkstYkh8b5plI9taPypePVHTZN8JA=;\tb=r1Oao8BRjHLoeHepefF8sT1XbuJvm4RZngvWTudpagUamJdbdspmutjBn1kHnQ9IdWBvNG\tZ/nAwcfbpKVJx1vp7gxAbCHq5+gdQoSW2vhKLXLfEqYI0NSAz1jUO3gnMI0gMFfX2btJ9l\tdnkVz19SmrBmlbluC/VnMPjqJULiAfexMosP7HnvV8LV/FT5dsehtQ1TQpbD1Ve7+MAlS9\tA2kSlIw6OZaMi8Bt/AvgkL0xCRGgb004ID+tnS3sc/ZQvBgI05xOrq1DL+80rzbClx1NTy\t+sNHx35p4khWZYxJQX4pswLz0C7bxICFS24EGpgt9DTrPHTuwTWmkpS/uEJO2w==",
+            "arc-authentication-results": "i=1;\tnl-srv-smtpin11.hostinger.io;\tdkim=pass header.d=gmail.com header.s=20230601 header.b=\"PBGYkjy/\";\tspf=pass (nl-srv-smtpin11.hostinger.io: domain of sathyaprakashelango@gmail.com designates 2001:4860:4864:20::33 as permitted sender) smtp.mailfrom=sathyaprakashelango@gmail.com;\tdmarc=pass (policy=none) header.from=gmail.com",
+            "arc-seal": "i=1; s=hostingermail-a; d=forgemind.in; t=1746379377; a=rsa-sha256;\tcv=none;\tb=XCwsog/ypUqUNfxGqroeFHp24BW7nz8VpThhi68YMyLx/BfJxpCtbwTZ72lV+XGpqFn+qS\t005kopQmqwDXH3HuRcnF9hey/8qWp3OoJowwI5WF0ssDg/toKfrGlhlnQGIscqd8CfOy8G\t6/Tu79u/vT/eLE0+ROkCB0K2CdAVVELepla4mPc0dyz4/o/aQeFOU8eFkX+qdbPIeWInrV\t0ieFE5ooqdNnA4rErfp6U4b9n8Cj5Hr39hlb33esJuDWCtQ7pGFhQoO19AI99RJF87b3Ct\tNwxfUEtI0kahu+vB1ufK4znFC5xS+kRp/PfiG4SwOkLaxbnpuI1MkYM/K+dP3A==",
+            "dkim-signature": "v=1; a=rsa-sha256; c=relaxed/relaxed;        d=gmail.com; s=20230601; t=1746379375; x=1746984175; darn=forgemind.in;        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject         :date:message-id:reply-to;        bh=How3au91bDq9L8vkstYkh8b5plI9taPypePVHTZN8JA=;        b=PBGYkjy/jqH1aJC2fV53Hei7TTqpBwBZt0xVOcxDdX4JrbXFf3t7zFGbh0o8sJhuhY         CsjevYP5Yo0l28xhUfC/PiPYgy1kFY3nZiYjuTdaOUUioKq5tPSYU7sUVIn55VR/CTz6         5UGYfXNSLlPHJGEWL10BaSiQ7zAVw+bhL8PjOcNA+StKWr9fGMuGv7/rE8C+kMty/a0J         uDV/Rg6awG/sAhNrlGOBJidCRML/QnDHv3VdgTLF7d6LdJTDvEt31lALhcSuZWx5aieR         wsI/n4RjsNOsC17AedtTKY1EwvhghNtPQ/Ow2s76MIwVVSP7JIzmka940e7HJPhheIKj         FTuQ==",
+            "x-google-dkim-signature": "v=1; a=rsa-sha256; c=relaxed/relaxed;        d=1e100.net; s=20230601; t=1746379375; x=1746984175;        h=to:subject:message-id:date:from:mime-version:x-gm-message-state         :from:to:cc:subject:date:message-id:reply-to;        bh=How3au91bDq9L8vkstYkh8b5plI9taPypePVHTZN8JA=;        b=VkQMJW6xfrRhQu2ku0Q8jPl055LTzVV2f3JNtF5Q0JNMsUpZL30p1W8r1Dqt+zAxRe         MtXZYX5pVsNw+Vi50s4r9d7ow5dwqB52EvM8O/k/knrAXOq0NJAurNPPVhrKBe/K/2/x         DBB7M+5Dt4ydYvbMGw6Munk0dTwl3fPA+zN7gHYzgz77chJRLGMND9OKnyEPfwUOf0Ji         6IzAPBLYhKemR972tpYqtTbARIr4s0BSLByUy7sgYVeMyOC/tKcbaPNR4E2+DVOlpGTS         +r1xea4AiQDyJUIdEM+nW8wF6anCngeOPyDGTxlzG15wzlhS6Mr6LfZQmQGSme5ZGmwm         kisQ==",
+            "x-gm-message-state": "AOJu0Yy8M/VZs6EG7Xc/cMBKCvGtDx935wuDdADV5y7+viLYa30dF/r8\tYdB9KE9nOoISjeF/mEEkro96ObxGBksC73ZBCQSa1W3x4KOGfVJZRo4LzGPRqge2GLkChl5F0la\tNB2Xlp4Iu+IGDnrKM/WZJ3EG3DcHzyetVdnQ=",
+            "x-gm-gg": "ASbGncvT//3APaQMtEMgLuxqu2lrvbrUVJ9s8yPEyu49wEuEdkKi+JObRz0l/LtkWTx\t1XmU+2DscnuwRlDerGjDmzLicyLDp6ye1AtqJzhN1O+178L9Ay/3kaVRo2hkX6qkp9udBPokKl3\tDUZ6G7NX5k613zWuKeGTYi",
+            "x-google-smtp-source": "AGHT+IHLkkc9Cxe6DkSFI9xHoOCnpXRRQm22JBAO6snFbFRCqU4JQGYZzcT0gidPebanbEVjEdM9vA1WMGgL6JlCB7I=",
+            "x-received": "by 2002:a05:6870:d68c:b0:2c2:5be4:c01e with SMTP id 586e51a60fabf-2dae825b572mr2449532fac.1.1746379375613; Sun, 04 May 2025 10:22:55 -0700 (PDT)",
+            "mime-version": "1.0",
+            "x-gm-features": "ATxdqUGmGvj1OAMZhBPhbMxJRrA-IiM4dIvz6N7qaFrPINolNu7YOeKFehePZik",
+            "message-id": "<CAB_3Dpf9X_mCDdGbsc4qbLG-uYpMZTJ28mObfc5-8yxh3-m_gw@mail.gmail.com>",
+            "content-type": "multipart/alternative; boundary=\"000000000000539ddd063452a2d1\"",
+            "x-cm-envelope": "MS4xfPBmG7EP5G7N5pCJreayUWL3pGBsa7wr0T5e8Ft6/jbe7f0HMVcmiOBn8Eg+e8/GQEt8QdpkpJHDvMdQQTKAs8pHUaRn8iKUUUXospvQPkwFsRAH5mQ/ GjG8K0x/b3hQOxqTebp/C9eoeCq+jEUc4rmeQzvmzDeEpq/yCz803nCsBGEj+/IdlWjxP7yg5Jn7lJtPzgmTUf0tjNr3B9VD232SE5YeG7Z06INn1cK/GW2f",
+            "x-cm-analysis": "v=2.4 cv=AoO83/9P c=1 sm=1 tr=0 ts=6817a271 a=M0Yzsqt3IuaolV5d9AEsjQ==:617 a=xqWC_Br6kY4A:10 a=dt9VzEwgFbYA:10 a=x7bEGLp0ZPQA:10 a=neaMv00LHDMA:10 a=95EFz5htlIgA:10 a=AyvA3AJ-fwt2WxV4pHMA:9 a=QEXdDO2ut3YA:10 a=Uz9EnhuHEG25YKoRyM-d:22 a=jMROYaktyPko46j5XlsI:22"
+          },
+          "attributes": {
+            "uid": 175
+          },
+          "from": "Sathya Prakash <sathyaprakashelango@gmail.com>",
+          "date": "Sun, 4 May 2025 22:52:43 +0530",
+          "subject": "Sample",
+          "to": "info@forgemind.in"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Summarization Chain": {
+      "main": [
+        [
+          {
+            "node": "Lead List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarization Chain1": {
+      "main": [
+        [
+          {
+            "node": "Ideas List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead List": {
+      "main": [
+        [
+          {
+            "node": "Sales & Management  Team",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ideas List": {
+      "main": [
+        [
+          {
+            "node": "Tech Team",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Mail Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Summarization Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Summarization Chain2",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Summarization Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarization Chain2": {
+      "main": [
+        [
+          {
+            "node": "Sales & Management  Team",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mail Classifier": {
+      "main": [
+        [
+          {
+            "node": "Summarization Chain",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Summarization Chain2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Summarization Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Mail Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "89b1d18c-e903-49a2-ad1e-5b9801fab904",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "030862b1dcaff3ff9cb8f16544487a6b16cf430e1deb04f332ab7722f5f563bd"
+  },
+  "id": "Jeh6kJKHyJ6THKWs",
+  "tags": [
+    {
+      "createdAt": "2025-05-04T03:39:01.686Z",
+      "updatedAt": "2025-05-04T03:39:01.686Z",
+      "id": "yKDnu9iSxWPsUMvf",
+      "name": "whatsapp"
+    },
+    {
+      "createdAt": "2025-05-04T17:27:37.514Z",
+      "updatedAt": "2025-05-04T17:27:37.514Z",
+      "id": "zsaBY9aaHGDFUdbn",
+      "name": "imap"
+    }
+  ]
+}
